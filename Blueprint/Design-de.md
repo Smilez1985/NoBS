@@ -1059,11 +1059,11 @@ No More Bullshit.
 • Kryptografische Verifikation vor Vertrauen: Fremde Schlüssel (wie Docker GPG) werden in einem isolierten temporären Keyring gegen fest verdrahtete Fingerprints geprüft, bevor das System ihnen vertraut – und im Fehlerfall nimmt docker_rpm_undo jede angefangene Änderung rückstandsfrei zurück.
 • Klartext-Diagnose statt kryptischer Fehler: Selbst wenn eine HTTPS-Verbindung scheitert, prüft das Skript zuerst, ob schlicht die Systemuhr (klassischer Dual-Boot-Windows-Bug!) verstellt ist, und erklärt die Behebung in klaren Sätzen.
 
-Übertragung auf den Windows-Installer für NoBS (in Rust)
+• Einstiegspunkt install.ps1 (und install.sh für eine spätere Linux-Variante): Auf Windows ist PowerShell auf jedem Rechner ab Werk vorinstalliert. Ein install.ps1-Skript als Einstiegspunkt braucht keinerlei Vorab-Kompilierung, lässt sich von Admins und Power-Usern vor der Ausführung im Klartext prüfen und kann selbstständig prüfen, ob die kompilierte Rust-Core-Binary schon vorliegt, diese SHA-256-verifiziert herunterladen oder direkt mit cargo bauen.
+• Kein Rust-Zwang für den Installer selbst: Wenn install.ps1 (analog zu deiner install.sh) die System-Checks, die eingebettete Python-Umgebung, das Manifest (nobs-installed-manifest.json), --dry-run, --offline und das Aufräumen übernimmt, sparst du dir für den Installer den kompletten Cross-Compile- und GUI-Overhead in Rust – und bleibst trotzdem zu 100 % bei deinen Regeln (R3: SHA-256-Prüfung, Idempotenz, Manifest-Tracking).
+• Saubere Brücke zu Rust: Rust kümmert sich dann erst um die eigentliche Laufzeit-Infrastruktur (MCP-Server, Windows-Service, State Management), während install.ps1 / uninstall.ps1 das Lebenszyklus-Management des Pakets steuern
 
-Genau nach diesem Bauplan kannst du den Rust-Installer (nobs-setup.exe) für NoBS aufziehen:
-• Idempotentes Manifest (nobs-installed-manifest.json): Speichert beim Installieren exakt, welche Ordner, Dateien, Registry-Einträge, Windows-Dienste oder eingebetteten Runtimes neu erstellt wurden (inkl. SHA-256-Hashes und Vorher-Zustand), damit der Uninstaller alles chirurgisch sauber zurückbaut, ohne bestehende System-Komponenten anzurühren.
-• Inklusive --dry-run und --offline: Exakt wie in deiner install.sh.
+
 
 ---
 
