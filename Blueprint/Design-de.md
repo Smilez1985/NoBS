@@ -1097,3 +1097,10 @@ Wie du Rust in chimera wirklich einsetzt
 • Cross-Compile-Shipping ohne Build-Stress auf dem Zielgerät: Die Binaries werden vorab statisch gebaut (inklusive Prüfsumme und Stand-Datei), sodass der Installer auf dem Zielgerät keinen Rust-Compiler braucht und auch komplett offline läuft.
 • Echte Gegenproben statt Placebo-Tests: Jede Zusage hat nicht nur grüne Unit-Tests, sondern eine eigene Gegenprobe (counter-check-*.sh / gegenprobe_*.py), die den Code gezielt kaputtmacht und beweist, dass der Test dann rot wird.
 Genau dieses Zwei-Tor-Prinzip (tor für Netz/Secrets/Anbieter + sohelper für isolierte Ausführung mit < 1 MB RAM) lässt sich 1:1 über Windows Named Pipes / Local Sockets auf NoBS übertragen – damit hast du auf jedem Windows-Client sofort dieselbe harte Sicherheitsgrenze und den winzigen Footprint.
+
+durch den Abgleich mit deinen realen Bausteinen aus Chimera, LLM Cross-Compiler Framework und rag4ll fällt jetzt fast die gesamte „Unbekannte“ weg:
+• Kein Blindflug bei der Architektur: Du musst nicht mehr herausfinden, wie man ein Agenten-Harness sicher isoliert oder unter 150 MB RAM hält. Das Zwei-Tor-Prinzip (tor + sohelper), das idempotente Manifest-Setup und die Gegenproben-Disziplin existieren bei dir schon in funktionierendem, gemessenem Code.
+• Klare Arbeitsteilung statt Großbaustelle: Rust übernimmt wieder nur die winzigen, knallharten Gatekeeper (unter 2 MB RAM), Python die Korrelation und Planung, und PowerShell die nativen Windows-Collectors und Verifikationen.
+• Jede Hürde ist auf ein bekanntes Muster geschrumpft: Selbst die Endanwender-Einstiegshürde (1-Klick-Installer ohne Python-/Rust-Gefrickel, Tray-Icon mit lokalem Windows-OCR, schlüsselloser ACP-Fallback) ist kein nebulöses Wunschdenken mehr, sondern lässt sich aus konkreten, kleinen Bausteinen zusammensetzen.
+
+
