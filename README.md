@@ -124,6 +124,64 @@ Reasoning second.
 Execution last.
 
 ---
+# Target Audience
+
+## Primary Target Audience
+
+NoBS is primarily designed for everyday end users.
+
+This means people who want to use their computer, not administer it (e.g., parents, grandparents, students, retirees, small business owners, tradespeople, teachers, caregivers).
+
+These users:
+
+- cannot read log files
+- do not know what event logs are
+- cannot edit the Windows Registry
+- do not use PowerShell
+- cannot interpret error codes
+- do not know which system data is relevant
+
+NoBS is not meant to train system administrators.
+
+NoBS is meant to explain computer problems in plain language and make them safely solvable.
+
+---
+
+## Secondary Target Audience
+
+- Helpdesk
+- First-Level Support
+- IT Administrators
+- Power Users
+
+These groups benefit from:
+
+- time savings
+- structured RCA reports
+- complete auditing
+- reproducible automation
+
+However, they are explicitly not the primary target audience.
+
+---
+
+# User Principle
+
+NoBS explains computer problems in human language.
+
+The computer must make itself understandable to the human — not the other way around.
+
+Every output for end users must answer five core questions:
+
+1. **What happened?** (Plain-language explanation instead of an error code)
+2. **Why did it happen?** (Root cause without technical jargon)
+3. **Is my computer broken?** (Clear distinction between hardware and software issues)
+4. **Can I lose any data?** (Transparent statement on data safety and backup status)
+5. **What can be done about it?** (Concrete, safe remediation proposal)
+
+Technical details (Event IDs, log paths, registry keys, commands) remain fully preserved for transparency and auditing, but are encapsulated behind a details view for end users.
+
+---
 
 ## Design Principles
 
