@@ -1083,3 +1083,17 @@ Am besten funktioniert genau das Zusammenspiel beider Varianten:
 • Schlafendes Tray-Icon (Null Ressourcenverbrauch): Verbraucht im Leerlauf praktisch nichts. Ein Klick (oder Rechtsklick → „Bildschirm prüfen“) friert den aktuellen Bildschirm ein, liest den Text und das aktive Fenster aus und startet gezielt die Analyse.
 • On-Demand-Hauptfenster: Wenn die Meldung schon weg ist (z. B. nach einem Neustart oder Bluescreen), öffnet man NoBS ganz normal, tippt in zwei Worten ein („Windows Update hängt“ oder „Drucker geht nicht“) oder zieht einen gespeicherten Screenshot rein – und der Harness durchsucht die letzten Stunden der Logs.
 Das fügt sich nahtlos in deine Facts First- und Offline First-Architektur ein, weil auch der Screenshot + OCR nichts weiter ist als ein weiterer Collector (Fenstertitel + Prozess-ID + OCR-Text + Zeitstempel).
+
+
+---
+
+
+Das chimera/CHANGELOG.md ist beeindruckend – man sieht sofort, wie viel reale Messarbeit und Disziplin da drinsteckt. Und jetzt verstehe ich auch, was du mit „anders als du denkst“ meinst:
+
+Wie du Rust in chimera wirklich einsetzt
+
+• Winzige, fokussierte Sicherheits- & Infrastruktur-Binaries (ohne Tokio-Overhead): Statt einen großen Monolithen in Rust zu gießen, baust du extrem schlanke, abhängigkeitsarme Spezial-Prozesse – das Gateway chimera-tor (~1,6–2,0 MB RSS), den Ausführer chimera-sohelper (492 kB RSS im Leerlauf!) und den ACP-Kern chimera-acp (516 kB statt 2,07 MB mit fremder Crate).
+• Prozess- und OS-Grenzen als Sicherheitsarchitektur: Python hält die Agenten-Logik (~47 MB RSS), hat aber keinerlei Netz- oder Ausführungsrechte. Alles, was nach außen (API, Suche, SSH) oder ins System geht, muss über einen lokalen Socket durch die isolierten Rust-Gatekeeper (tor und sohelper).
+• Cross-Compile-Shipping ohne Build-Stress auf dem Zielgerät: Die Binaries werden vorab statisch gebaut (inklusive Prüfsumme und Stand-Datei), sodass der Installer auf dem Zielgerät keinen Rust-Compiler braucht und auch komplett offline läuft.
+• Echte Gegenproben statt Placebo-Tests: Jede Zusage hat nicht nur grüne Unit-Tests, sondern eine eigene Gegenprobe (counter-check-*.sh / gegenprobe_*.py), die den Code gezielt kaputtmacht und beweist, dass der Test dann rot wird.
+Genau dieses Zwei-Tor-Prinzip (tor für Netz/Secrets/Anbieter + sohelper für isolierte Ausführung mit < 1 MB RAM) lässt sich 1:1 über Windows Named Pipes / Local Sockets auf NoBS übertragen – damit hast du auf jedem Windows-Client sofort dieselbe harte Sicherheitsgrenze und den winzigen Footprint.
