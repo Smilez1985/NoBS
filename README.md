@@ -322,7 +322,7 @@ The blueprint comes first.
 See:
 
 ```text
-Blaupause/
+Blueprint/
 ├─ design.md
 ├─ roadmap.md
 └─ changelog.md
