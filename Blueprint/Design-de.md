@@ -1050,3 +1050,21 @@ No More Bullshit.
 • Regel R5 (Abgestufte Freigaben): Hilft enorm bei der UX für Endanwender und Helpdesk: Nicht-destruktive Standard-Reparaturen (Caches leeren, Dienste neu starten) können in einen niedrigschwelligen Bestätigungs-Flow, während tiefgreifende Eingriffe (Registry-Änderungen, Firewall-Regeln, Datenlöschung) ein hartes Genehmigungs-Gate erzwingen.
 
 • Regel R6 (Lernen nur aus grün geprüften Lösungen + SKILL.md-Promotion): Das ist der perfekte Bauplan für deine Learning Engine aus der Design.md! Nur verifizierte Lösungen (verified: true) wandern ins rag4ll-Runbook-Gedächtnis – und ab N ≥ 10 verifizierten Treffern erzeugt NoBS automatisch einen deterministischen SKILL.md-Entwurf, der nach Review als festes MCP-Tool promoviert wird.
+
+---
+
+
+• Manifest-gesteuerte Aktualisierung (.lcf-installed-files): Ein erneuter Lauf aktualisiert nur die vom Repository gelieferten Dateien und räumt exakt veraltete Dateien aus früheren Versionen weg – ohne jemals bestehende Nutzerdaten, eigene Targets, Caches oder Konfigurationen anzufassen.
+• Echter --dry-run-Modus: Der Installer erkennt das komplette System und zeigt genau an, welche Pakete, Quellen und Änderungen er durchführen würde, ohne auch nur ein Byte anzufassen.
+• Kryptografische Verifikation vor Vertrauen: Fremde Schlüssel (wie Docker GPG) werden in einem isolierten temporären Keyring gegen fest verdrahtete Fingerprints geprüft, bevor das System ihnen vertraut – und im Fehlerfall nimmt docker_rpm_undo jede angefangene Änderung rückstandsfrei zurück.
+• Klartext-Diagnose statt kryptischer Fehler: Selbst wenn eine HTTPS-Verbindung scheitert, prüft das Skript zuerst, ob schlicht die Systemuhr (klassischer Dual-Boot-Windows-Bug!) verstellt ist, und erklärt die Behebung in klaren Sätzen.
+
+Übertragung auf den Windows-Installer für NoBS (in Rust)
+
+Genau nach diesem Bauplan kannst du den Rust-Installer (nobs-setup.exe) für NoBS aufziehen:
+• Idempotentes Manifest (nobs-installed-manifest.json): Speichert beim Installieren exakt, welche Ordner, Dateien, Registry-Einträge, Windows-Dienste oder eingebetteten Runtimes neu erstellt wurden (inkl. SHA-256-Hashes und Vorher-Zustand), damit der Uninstaller alles chirurgisch sauber zurückbaut, ohne bestehende System-Komponenten anzurühren.
+• Inklusive --dry-run und --offline: Exakt wie in deiner install.sh.
+
+---
+
+
