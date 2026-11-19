@@ -1067,4 +1067,19 @@ No More Bullshit.
 
 ---
 
+ungeordneet:
 
+Die Kombination aus Tray-Icon und On-Demand-Fenster mit automatischem Desktop-Screenshot + Texterkennung (OCR) ist eine geniale Idee – und genau der fehlende Baustein für echte Endanwender.
+
+Warum der „Screenshot-Trigger“ der ultimative Einstieg ist
+
+• Kein Abtippen von Hex-Codes mehr: Oma oder ein Mitarbeiter im Büro muss keinen Fehlercode wie 0x80070003 mehr abschreiben oder erklären, was gerade passiert ist. Die Fehlermeldung poppt auf → Klick aufs NoBS-Tray-Icon („Was ist das?“) → NoBS macht sofort einen Screenshot, bevor das Fenster weggeklickt wird.
+• Lokales Windows-OCR ab Werk: Windows 10 und 11 bringen mit der nativen Windows.Media.Ocr-API (direkt aus PowerShell oder Rust ansprechbar!) bereits eine extrem schnelle, 100 % lokale Texterkennung mit – ganz ohne Cloud und ohne zusätzliche KI-Bibliotheken.
+• Der „Scharfschützen-Effekt“ für die Collectors: Sobald OCR aus dem Screenshot den Text, den Fenstertitel, den Prozessnamen (Get-Process des aktiven Fensters!) und die Uhrzeit extrahiert hat, müssen die Collectors nicht mehr blind das ganze System durchwühlen. Sie suchen gezielt im Zeitfenster ± 60 Sekunden um diesen einen Prozess und Fehlercode herum.
+
+Die ideale Benutzerführung (Beides vereint)
+
+Am besten funktioniert genau das Zusammenspiel beider Varianten:
+• Schlafendes Tray-Icon (Null Ressourcenverbrauch): Verbraucht im Leerlauf praktisch nichts. Ein Klick (oder Rechtsklick → „Bildschirm prüfen“) friert den aktuellen Bildschirm ein, liest den Text und das aktive Fenster aus und startet gezielt die Analyse.
+• On-Demand-Hauptfenster: Wenn die Meldung schon weg ist (z. B. nach einem Neustart oder Bluescreen), öffnet man NoBS ganz normal, tippt in zwei Worten ein („Windows Update hängt“ oder „Drucker geht nicht“) oder zieht einen gespeicherten Screenshot rein – und der Harness durchsucht die letzten Stunden der Logs.
+Das fügt sich nahtlos in deine Facts First- und Offline First-Architektur ein, weil auch der Screenshot + OCR nichts weiter ist als ein weiterer Collector (Fenstertitel + Prozess-ID + OCR-Text + Zeitstempel).
