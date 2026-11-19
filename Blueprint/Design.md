@@ -1,3 +1,968 @@
+# NoBS (No More Bullshit)
+
+## Was und warum
+
+NoBS ist ein OS-naher Diagnose-, Analyse- und Remediation-Harness für Windows.
+
+Windows sammelt bereits umfangreiche Informationen über seinen eigenen Zustand:
+
+- Event Logs
+- Reliability Monitor
+- Windows Update Telemetrie
+- CBS
+- DISM
+- WMI/CIM
+- Hyper-V Diagnosedaten
+- Defender Telemetrie
+- Service Status
+- Registry
+- Performance Counter
+
+Das Problem ist nicht der Mangel an Daten.
+
+Das Problem ist, dass diese Daten über dutzende Quellen verteilt sind und Windows sie nur unzureichend korreliert.
+
+Dadurch erhalten Benutzer häufig Fehlermeldungen wie:
+
+```text
+0x80070005
+
+Something went wrong.
+
+Windows Update failed.
+
+Hyper-V encountered an error.
+```
+
+Dabei liegen die eigentlichen Ursachen oft bereits auf dem System vor.
+
+NoBS sammelt diese Informationen, korreliert sie, recherchiert bei Bedarf zusätzliche Evidenz, erstellt nachvollziehbare Reparaturpläne und unterstützt Benutzer bei der Behebung von Problemen.
+
+Das Ziel ist nicht ein weiterer Chatbot.
+
+Das Ziel ist ein Betriebssystem-Harness, der Probleme nachvollziehbar analysiert und auf Basis von Fakten konkrete Handlungsempfehlungen erzeugt.
+
+---
+
+# Architekturregel (SSOT)
+
+Wer Architekturentscheidungen, Datenflüsse, Sicherheitsmodelle oder Grundprinzipien verändert, ändert zuerst diese Datei.
+
+Dieses Dokument ist die Single Source of Truth (SSOT).
+
+Roadmap, Implementierung und Dokumentation richten sich nach diesem Dokument.
+
+---
+
+# Projektziele
+
+## Primärziele
+
+- Ursachen statt Symptome erkennen
+- Verteilte Windows-Datenquellen zusammenführen
+- Root Cause Analysis durchführen
+- Evidenz sammeln
+- Reparaturpläne erzeugen
+- Human-In-The-Loop gewährleisten
+- Vollständige Auditierbarkeit sicherstellen
+- Lokal betrieben werden können
+
+## Sekundärziele
+
+- Support-Aufwand reduzieren
+- Fehlersuche beschleunigen
+- Dokumentation automatisch erzeugen
+- Wiederkehrende Probleme erkennen
+- Bewährte Reparaturpfade lernen
+
+---
+
+# Nicht-Ziele
+
+NoBS ist kein:
+
+- allgemeiner KI-Assistent
+- Chatbot
+- Sprachassistent
+- Cloud-Service
+- autonomes System ohne Benutzerkontrolle
+- Ersatz für Administratoren
+
+NoBS unterstützt Administratoren und Benutzer bei der Problemanalyse und Problemlösung.
+
+---
+
+# Technologie-Stack
+
+NoBS verwendet bewusst mehrere Sprachen.
+
+Jede Sprache besitzt einen klar definierten Aufgabenbereich.
+
+## PowerShell
+
+Windows Integration
+
+Verantwortlich für:
+
+- Eventlogs
+- Registry
+- Hyper-V
+- Services
+- DISM
+- SFC
+- WMI
+- CIM
+- Collector
+- Executor
+- Verification
+
+---
+
+## Python
+
+Agentische Logik
+
+Verantwortlich für:
+
+- MCP Clients
+- Research Engine
+- Correlation Engine
+- LLM Planner
+- Audit Engine
+- Kontextmanagement
+
+---
+
+## Rust
+
+Systemnahe Infrastruktur
+
+Verantwortlich für:
+
+- MCP Server
+- ACP Server
+- State Management
+- Datenhaltung
+- Config Management
+- Packaging
+- Verteilung
+- Windows Service Integration
+- Caching
+
+---
+
+## Architekturregel
+
+Komponenten werden nicht aufgrund persönlicher Vorlieben implementiert.
+
+Jede Sprache besitzt einen klar definierten Verantwortungsbereich.
+
+Doppelte Implementierungen sind zu vermeiden.
+
+---
+
+# Grundprinzipien
+
+## Facts First
+
+NoBS arbeitet ausschließlich auf nachweisbaren Fakten.
+
+Fakten stammen aus:
+
+- Event Logs
+- Systemzuständen
+- Telemetrie
+- Konfigurationen
+- Dateien
+- Registry
+- APIs
+- Herstellerdokumentationen
+
+Nicht belegbare Annahmen sind unzulässig.
+
+---
+
+## Human In The Loop
+
+Änderungen am System erfolgen niemals ohne Benutzerfreigabe.
+
+NoBS darf:
+
+- analysieren
+- korrelieren
+- recherchieren
+- planen
+
+NoBS darf erst nach Freigabe:
+
+- ändern
+- reparieren
+- konfigurieren
+- entfernen
+- installieren
+
+---
+
+## Explainability
+
+Jede Empfehlung muss nachvollziehbar begründet werden.
+
+Jeder Plan muss enthalten:
+
+- Ursache
+- Evidenz
+- Confidence
+- Risiken
+- Rollback-Möglichkeit
+- erwartetes Ergebnis
+
+---
+
+## Audit First
+
+Jede Analyse wird protokolliert.
+
+Jede Entscheidung wird protokolliert.
+
+Jede Änderung wird protokolliert.
+
+Jedes Ergebnis wird protokolliert.
+
+Nichts geschieht ohne Nachvollziehbarkeit.
+
+---
+
+## Offline First
+
+Die Kernfunktionen müssen ohne Cloud-Nutzung funktionieren.
+
+Internetzugriff erweitert die Fähigkeiten, ersetzt sie aber nicht.
+
+---
+
+## Functional Verification Over Exit Codes
+
+Eine Reparatur gilt nicht als erfolgreich, weil ein Skript erfolgreich beendet wurde.
+
+Eine Reparatur gilt erst dann als erfolgreich, wenn das eigentliche Problem nachweislich verschwunden ist.
+
+Beispiele:
+
+```text
+Dienst startet
+≠ Problem gelöst
+```
+
+```text
+Windows Update funktioniert wieder
+= Problem gelöst
+```
+
+```text
+VM startet erfolgreich
+= Problem gelöst
+```
+
+---
+
+# Agent Harness Architektur
+
+## Warum NoBS ein Harness ist
+
+Das LLM ist nicht NoBS.
+
+Das LLM ist lediglich eine Komponente innerhalb von NoBS.
+
+NoBS stellt die vollständige Infrastruktur bereit:
+
+- Zustand
+- Werkzeuge
+- Sicherheit
+- Gedächtnis
+- Auditierung
+- Wiederherstellung
+
+Das LLM liefert:
+
+- Analyse
+- Korrelation
+- Planung
+
+---
+
+## Agent Loop
+
+Grundschema:
+
+```text
+Reason
+↓
+Act
+↓
+Observe
+↓
+Verify
+↓
+Continue / Stop
+```
+
+---
+
+## Stop-Bedingungen
+
+### Maximale Iterationen
+
+```text
+max_steps
+```
+
+---
+
+### Maximales Zeitbudget
+
+Konfigurierbar.
+
+---
+
+### Maximales Tokenbudget
+
+Konfigurierbar.
+
+---
+
+### Erfolgreiche Verifikation
+
+Der Agent beendet die Analyse, sobald das Problem nachweislich behoben wurde.
+
+---
+
+# Systemarchitektur
+
+```text
+Windows Quellen
+        │
+        ▼
+Collector
+        │
+        ▼
+Normalizer
+        │
+        ▼
+Facts Database
+        │
+        ▼
+Correlation Engine
+        │
+        ▼
+Research Engine
+        │
+        ▼
+LLM Planner
+        │
+        ▼
+Dry Run
+        │
+        ▼
+Human Approval
+        │
+        ▼
+Executor
+        │
+        ▼
+Verification
+        │
+        ▼
+Audit
+```
+
+---
+
+# MCP First Architecture
+
+NoBS verwendet MCP als primäre Integrationsschicht.
+
+Alle Diagnose-, Recherche-, Verifikations- und Remediation-Funktionen werden als MCP Tools bereitgestellt.
+
+Das LLM arbeitet ausschließlich über definierte MCP Schnittstellen.
+
+---
+
+# Datenquellen
+
+## Event Logs
+
+- System
+- Application
+- Setup
+- Security
+- Custom Provider Logs
+
+---
+
+## Reliability Monitor
+
+- Win32_ReliabilityRecords
+
+---
+
+## Windows Update
+
+- WindowsUpdateClient
+- CBS.log
+- DISM.log
+
+---
+
+## Hyper-V
+
+- VMMS
+- Worker
+- Virtual Switches
+- Host Configuration
+
+---
+
+## Defender
+
+- Threat Detection
+- Scan Status
+- Protection Status
+
+---
+
+## WMI / CIM
+
+- Hardware
+- Betriebssystem
+- Netzwerk
+- Dienste
+- Benutzer
+- Prozesse
+
+---
+
+## Registry
+
+Während der Analyse ausschließlich lesender Zugriff.
+
+Schreibender Zugriff nur innerhalb freigegebener Reparaturpläne.
+
+---
+
+## Performance Daten
+
+- CPU
+- RAM
+- Storage
+- Netzwerk
+- Prozesse
+- Dienste
+
+---
+
+# Collector
+
+Verantwortlichkeiten:
+
+- Sammeln
+- Extrahieren
+- Klassifizieren
+- Strukturieren
+
+Der Collector interpretiert niemals Daten.
+
+Collector-Ausgaben sind reine Fakten.
+
+---
+
+# Normalizer
+
+Alle Quellen werden in ein gemeinsames Datenmodell überführt.
+
+Beispiel:
+
+```json
+{
+  "id": "uuid",
+  "timestamp": "",
+  "collector": "",
+  "source": "",
+  "severity": "",
+  "event_id": "",
+  "message": "",
+  "host": "",
+  "tags": []
+}
+```
+
+---
+
+# Facts Database
+
+Die Facts Database enthält ausschließlich Fakten.
+
+Sie enthält:
+
+- Messwerte
+- Ereignisse
+- Zustände
+- Konfigurationen
+- Ergebnisse
+
+Sie enthält keine Vermutungen.
+
+Sie enthält keine KI-generierten Annahmen.
+
+---
+
+# Context Management
+
+## Aktiver Kontext
+
+Der Prompt enthält nur relevante Informationen.
+
+---
+
+## Persistentes Gedächtnis
+
+Speicherorte:
+
+- SQLite
+- Auditdatenbank
+- Runbooks
+- Faktenhistorie
+
+---
+
+## Kontext-Kompaktierung
+
+Gespeichert werden:
+
+- Evidenz
+- Entscheidungen
+- Ergebnisse
+
+Nicht komplette Rohlogs.
+
+---
+
+# Correlation Engine
+
+Die Correlation Engine sucht Zusammenhänge zwischen Fakten.
+
+Sie erzeugt Evidenzketten.
+
+Sie führt keine Reparaturen aus.
+
+---
+
+# Evidenzmodell
+
+## Level 1
+
+Einzelner Messwert
+
+---
+
+## Level 2
+
+Einzelner Logeintrag
+
+---
+
+## Level 3
+
+Mehrere unabhängige Quellen bestätigen denselben Sachverhalt.
+
+---
+
+## Level 4
+
+Funktionale Verifikation.
+
+---
+
+# Research Engine
+
+Bevorzugte Quellen:
+
+- Microsoft Learn
+- Microsoft KB Artikel
+- Herstellerdokumentationen
+- Offizielle GitHub-Projekte
+
+Alle Quellen müssen dokumentiert werden.
+
+---
+
+# Rolle des LLM
+
+Das LLM ist kein Wahrheitslieferant.
+
+Das LLM ist:
+
+- Analyst
+- Korrelator
+- Planer
+- Dokumentationsgenerator
+
+Das LLM erhält ausschließlich strukturierte Fakten.
+
+Das LLM darf:
+
+- Fakten auswerten
+- recherchieren
+- Reparaturpläne erzeugen
+
+Das LLM soll nicht raten.
+
+---
+
+# MCP Sicherheitsmodell
+
+## MCP Klassen
+
+### Klasse A – Read Only
+
+Beispiele:
+
+```text
+get_recent_errors()
+get_windows_update_status()
+get_hyperv_status()
+```
+
+---
+
+### Klasse B – Research
+
+Beispiele:
+
+```text
+search_ms_learn()
+search_kb_articles()
+search_github()
+```
+
+---
+
+### Klasse C – Planning
+
+Beispiele:
+
+```text
+build_repair_plan()
+estimate_risk()
+generate_rollback()
+```
+
+---
+
+### Klasse D – Execution
+
+Beispiele:
+
+```text
+repair_windows_update()
+modify_registry()
+restart_service()
+```
+
+---
+
+# Physische MCP Trennung
+
+Read-only und Execute werden in separaten Prozessen betrieben.
+
+## Collector MCP
+
+Read Only.
+
+---
+
+## Research MCP
+
+Recherche.
+
+---
+
+## Planner MCP
+
+Analyse.
+
+---
+
+## Executor MCP
+
+Write Access.
+
+Akzeptiert ausschließlich signierte Pläne.
+
+---
+
+# Kryptografische Freigabe-Architektur
+
+## Grundprinzip
+
+LLMs erzeugen Pläne.
+
+Menschen genehmigen Pläne.
+
+Der HITL Gateway signiert Pläne.
+
+Der Executor führt ausschließlich signierte Pläne aus.
+
+---
+
+# Signed Plan Format
+
+```json
+{
+  "plan_id": "uuid",
+  "nonce": "uuid",
+  "hash": "sha256",
+  "approved_by": "local_user",
+  "approved_at": "TT-MM-JJJJ_HH-MM-SS",
+  "expires_at": "TT-MM-JJJJ_HH-MM-SS",
+  "signature": "..."
+}
+```
+
+---
+
+# Replay Protection
+
+## Ablaufzeit
+
+Standard:
+
+```text
+5 Minuten
+```
+
+---
+
+## Nonce
+
+Jeder Plan erhält eine eindeutige Nonce.
+
+Nach Ausführung:
+
+```text
+consumed
+```
+
+---
+
+## Executor Prüfungen
+
+Pflicht:
+
+- Signatur gültig
+- Hash gültig
+- Nicht abgelaufen
+- Nonce vorhanden
+- Nonce nicht verbraucht
+
+---
+
+# Executor Locking
+
+## Standardzustand
+
+```text
+LOCKED
+```
+
+---
+
+## Entsperrung
+
+Nur über den HITL Gateway.
+
+---
+
+## Automatische Sperre
+
+Nach:
+
+- Erfolg
+- Fehler
+- Timeout
+
+wird automatisch wieder gesperrt.
+
+---
+
+# LLM Isolation
+
+Verboten:
+
+```text
+LLM
+↓
+Executor
+```
+
+Erlaubt:
+
+```text
+LLM
+↓
+Plan
+↓
+HITL
+↓
+Signatur
+↓
+Executor
+```
+
+---
+
+# Reparaturpläne
+
+Jeder Plan muss enthalten:
+
+- Ursache
+- Evidenz
+- Quellen
+- Schritte
+- Risiko
+- Rollback
+- Confidence
+
+---
+
+# Dry Run
+
+Vor jeder Ausführung wird ein Dry Run erzeugt.
+
+Der Nutzer muss nachvollziehen können:
+
+- Was passiert?
+- Warum?
+- Mit welchen Risiken?
+
+---
+
+# Verification Engine
+
+Nach jeder Änderung erfolgt eine erneute Analyse.
+
+Ziel:
+
+Prüfen ob das Problem verschwunden ist.
+
+Nicht ob der Befehl erfolgreich war.
+
+---
+
+# Verification Failure Handling
+
+## verified = true
+
+Problem behoben.
+
+Audit abschließen.
+
+---
+
+## verified = false
+
+Dem Nutzer werden angeboten:
+
+```text
+[ Rollback durchführen ]
+
+[ Alternativen suchen ]
+
+[ Plan verbessern ]
+
+[ Manuell eingreifen ]
+```
+
+---
+
+# Rollback Policy
+
+Jeder Plan benötigt vor Ausführung:
+
+- Rollbackstrategie
+- Risikobewertung
+- Verifikationsmethode
+
+---
+
+## Rollback Modi
+
+```json
+{
+  "rollback_mode": "none|manual|automatic"
+}
+```
+
+---
+
+## Kritische Regel
+
+NoBS führt niemals einen nicht-validierten Rollback automatisch aus.
+
+---
+
+# Checkpoints
+
+Typische Checkpoints:
+
+- Analyse abgeschlossen
+- Recherche abgeschlossen
+- Plan erstellt
+- Plan genehmigt
+- Reparatur ausgeführt
+- Verifikation abgeschlossen
+
+---
+
+# Recovery
+
+Agentläufe müssen jederzeit wiederaufnehmbar sein.
+
+---
+
+# Learning Engine
+
+Erfolgreiche Reparaturen können in Runbooks überführt werden.
+
+Ablauf:
+
+```text
+Problem
+↓
+Analyse
+↓
+Reparatur
+↓
+Verifikation
+↓
+Audit
+↓
+Runbook
+```
+
+---
+
+# Audit
+
+Jede Analyse und jede Änderung wird dokumentiert.
+
+Beispiel:
+
+```json
+{
+  "timestamp": "",
+  "session_id": "",
+  "plan_id": "",
+  "plan_hash": "",
   "approved_by": "",
   "tool": "",
   "result": "",
