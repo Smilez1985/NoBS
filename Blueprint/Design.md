@@ -1,74 +1,74 @@
----
- 
-# Sicherheitsmodell
- 
-NoBS arbeitet standardmäßig im Analysemodus.
- 
-Standardzustand:
- 
+Jede schreibende Aktion benötigt eine anschließende Verifikation.
+
+Beispiele:
+
 ```text
-Read Only
+repair_windows_update()
+ ↓
+verify_windows_update()
 ```
- 
-Schreibende Aktionen müssen explizit freigegeben werden.
- 
-Jeder Eingriff muss:
- 
-- dokumentiert
-- nachvollziehbar
-- reproduzierbar
-- widerrufbar
- 
-sein.
- 
+
 ---
- 
-# Langfristige Vision
- 
-Windows sammelt bereits nahezu alle Informationen, die für eine automatisierte Problemanalyse erforderlich sind.
- 
-NoBS stellt die fehlende Schicht zwischen:
- 
-- Rohdaten
-- Ursachenanalyse
-- Reparatur
-- Verifikation
- 
-bereit.
- 
-Das Ziel ist, aus:
- 
+
 ```text
-0x80070005
+repair_hyperv_switch()
+ ↓
+verify_hyperv_health()
 ```
- 
-ein:
- 
-```text
-Was ist passiert?
-Warum ist es passiert?
-Welche Beweise gibt es?
-Wie behebe ich es?
-Wie riskant ist die Reparatur?
-Kann die Reparatur rückgängig gemacht werden?
-Hat die Reparatur funktioniert?
-```
- 
-zu machen.
- 
+
 ---
- 
-# Leitsatz
- 
+
 ```text
-Stop guessing.
-Collect evidence.
- 
-Stop reading logs.
-Understand problems.
- 
-Stop showing error codes.
-Explain causes.
- 
-No More Bullshit.
+restart_service()
+ ↓
+verify_service_status()
+```
+
+---
+
+# Audit-Pflicht
+
+Jeder Ausführungsvorgang erzeugt einen Audit-Eintrag.
+
+Mindestinhalt:
+
+```json
+{
+  "timestamp": "",
+  "session_id": "",
+  "plan_id": "",
+  "plan_hash": "",
+  "approved_by": "",
+  "tool": "",
+  "result": "",
+  "verified": true
+}
+```
+
+---
+
+# Kritische Sicherheitsregel
+
+```text
+LLMs erstellen Pläne.
+
+Menschen genehmigen Pläne.
+
+Das HITL-Gateway signiert Pläne.
+
+Der Executor führt ausschließlich signierte Pläne aus.
+
+Jede Ausführung wird verifiziert.
+
+Jede Ausführung wird auditiert.
+```
+
+Dadurch wird technisch erzwungen:
+
+```text
+Kein HITL
+=
+Keine Signatur
+=
+Keine Ausführung
 ```
