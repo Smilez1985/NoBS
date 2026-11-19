@@ -124,6 +124,64 @@ Logisches Schließen als Zweites.
 Ausführung zuletzt.
 
 ---
+# Zielgruppe
+
+## Primäre Zielgruppe
+
+NoBS richtet sich primär an Endanwender.
+
+Gemeint sind Menschen, die ihren Computer benutzen und nicht administrieren wollen (z. B. Eltern, Großeltern, Schüler, Rentner, Kleinunternehmer, Handwerker, Lehrer, Pfleger).
+
+Diese Nutzer:
+
+- können keine Logfiles lesen
+- kennen keine Eventlogs
+- können keine Registry bearbeiten
+- nutzen keine PowerShell
+- können Fehlercodes nicht interpretieren
+- wissen nicht, welche Systemdaten relevant sind
+
+NoBS soll keine Administratoren ausbilden.
+
+NoBS soll Computerprobleme verständlich erklären und sicher lösbar machen.
+
+---
+
+## Sekundäre Zielgruppe
+
+- Helpdesk
+- First Level Support
+- IT-Administratoren
+- Power User
+
+Diese Zielgruppen profitieren von:
+
+- Zeitersparnis
+- strukturierten RCA-Berichten
+- lückenloser Auditierung
+- reproduzierbarer Automatisierung
+
+Sie sind jedoch ausdrücklich nicht die primäre Zielgruppe.
+
+---
+
+# Nutzerprinzip
+
+NoBS erklärt Computerprobleme in der Sprache von Menschen.
+
+Der Computer muss sich dem Menschen verständlich machen – nicht umgekehrt.
+
+Jede Ausgabe für Endanwender beantwortet zwingend fünf Kernfragen:
+
+1. **Was ist passiert?** (Verständliche Beschreibung statt Fehlercode)
+2. **Warum ist es passiert?** (Ursache ohne Fachchinesisch)
+3. **Ist mein Computer kaputt?** (Einordnung von Hardware- vs. Softwareproblem)
+4. **Kann ich etwas verlieren?** (Klare Aussage zur Datensicherheit / Backup-Status)
+5. **Was kann dagegen getan werden?** (Konkreter, sicherer Lösungsvorschlag)
+
+Technische Details (Event-IDs, Log-Pfade, Registry-Keys, Befehle) bleiben vollständig erhalten, werden aber für Endanwender hinter einer Detail-Ansicht gekapselt.
+
+---
 
 ## Designprinzipien
 
