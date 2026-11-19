@@ -72,3 +72,16 @@ zu machen.
 NoBS steht für:
 
 No More Bullshit.
+
+Level 1
+Messwert
+
+Level 2
+Logeintrag
+
+Level 3
+Mehrere korrelierende Quellen
+
+Level 4
+Reproduzierbarer Nachweis
+
