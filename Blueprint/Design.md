@@ -1037,3 +1037,16 @@ Explain causes.
 
 No More Bullshit.
 ```
+**Regeln für Agenten:**
+
+• Regel R1 (Harte Isolation / sohelper- & tor-Prinzip): Passt 1:1 zu deinem Executor MCP (Design.md). Statt freier PowerShell-Befehle sollte der Executor ausschließlich eine strikte Positivliste signierter Reparatur-Operationen akzeptieren, und die Research Engine läuft gekapselt über ein zentrales Gateway.
+
+• Regel R2 (Stiller Erfolg verboten + Gegenprobe): Das ergänzt deine Verification Engine um ein entscheidendes Qualitätsmerkmal: Gegenproben (Negative Testing). Jede verify_*()-Funktion sollte im Testbetrieb gegen einen absichtlich kaputten Zustand geprüft werden – schlägt sie dort nicht fehl, gilt die Prüfung als wertlos.
+
+• Regel R3 (Nur SHA-256-signierte Pakete, kein freies Nachladen): Eine extrem wichtige Ergänzung für deine Research & Execution Engine: Wenn eine Reparatur ein Tool, ein Update-Paket oder einen Treiber benötigt, darf NoBS niemals selbstständig Binaries aus dem Netz laden, sondern nur gegen einen lokalen, SHA-256-verifizierten Katalog prüfen (oder einen benannten Befund melden).
+
+• Regel R4 (Keine Klartext-Passwörter / Einmal-Tokens): Sobald NoBS in Enterprise- oder Helpdesk-Szenarien (Sekundärzielgruppe) über WinRM/SSH läuft, greift das exakt zu deinem Nonce- und Session-Binding-Modell: keine gespeicherten Credentials, nur kurzlebige, hostgebundene Einmal-Tokens.
+
+• Regel R5 (Abgestufte Freigaben): Hilft enorm bei der UX für Endanwender und Helpdesk: Nicht-destruktive Standard-Reparaturen (Caches leeren, Dienste neu starten) können in einen niedrigschwelligen Bestätigungs-Flow, während tiefgreifende Eingriffe (Registry-Änderungen, Firewall-Regeln, Datenlöschung) ein hartes Genehmigungs-Gate erzwingen.
+
+• Regel R6 (Lernen nur aus grün geprüften Lösungen + SKILL.md-Promotion): Das ist der perfekte Bauplan für deine Learning Engine aus der Design.md! Nur verifizierte Lösungen (verified: true) wandern ins rag4ll-Runbook-Gedächtnis – und ab N ≥ 10 verifizierten Treffern erzeugt NoBS automatisch einen deterministischen SKILL.md-Entwurf, der nach Review als festes MCP-Tool promoviert wird.
